@@ -1,5 +1,6 @@
 ﻿using Application.Authentication;
 using Domain;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -33,27 +34,5 @@ namespace Application
             ]);
         }
 
-        public static void ConfigureJwtAuthentication(this WebApplicationBuilder builder)
-        {
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateIssuer = true,
-                        ValidIssuer = JwtAuthOptions.Issuer,
-
-                        ValidateAudience = true,
-                        ValidAudience = JwtAuthOptions.Audience,
-
-                        ValidateLifetime = true,
-
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = JwtAuthOptions.GetSymmetricSecurityKey()
-                    };
-                });
-        }
     }
-
 }

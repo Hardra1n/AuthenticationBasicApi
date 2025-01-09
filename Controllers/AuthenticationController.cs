@@ -11,17 +11,25 @@ namespace Application.Controllers
     [Route("/api")]
     public class AuthenticationController : Controller
     {
-        private List<SystemUser> _users = new List<SystemUser>
+        private SystemUserSource _source;
+
+        public AuthenticationController(SystemUserSource source)
         {
-            new SystemUser {Username="admin@gmail.com", Password="12345"},
-            new SystemUser { Username="qwerty@gmail.com", Password="55555"}
-        };
+            _source = source;
+        }
 
         [HttpGet]
-        [Route("token")]
-        public IActionResult GetToken(string username, string password)
+        [Route("jwt/secret")]
+        public IActionResult GetSecret()
         {
-            var identity = GetIdentity(username, password);
+            return Json(JwtAuthOptions.Key);
+        }
+
+        [HttpPost]
+        [Route("jwt/token")]
+        public IActionResult GetToken([FromBody] SystemUser user)
+        {
+            var identity = GetIdentity(user.Username, user.Password);
             if (identity == null)
             {
                 return BadRequest("Invalid username or password");
@@ -36,17 +44,12 @@ namespace Application.Controllers
                 expires: now.Add(TimeSpan.FromMinutes(JwtAuthOptions.Lifetime)),
                 signingCredentials: new(JwtAuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(token);
-            var response = new
-            {
-                Token = encodedJwt,
-                Username = username
-            };
-            return Json(response);
+            return Json(encodedJwt);
         }
 
         private ClaimsIdentity GetIdentity(string username, string password)
         {
-            var systemUser = _users.FirstOrDefault(usr => usr.Username == username && usr.Password == password);
+            var systemUser = _source.GetUsers().FirstOrDefault(usr => usr.Username == username && usr.Password == password);
             if (systemUser == null)
             {
                 return null;

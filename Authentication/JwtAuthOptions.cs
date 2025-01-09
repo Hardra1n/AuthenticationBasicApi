@@ -8,8 +8,8 @@ namespace Application.Authentication
 
         public const string Issuer = "MyAuthServer";
         public const string Audience = "MyAuthClient";
-        private const string Key = "SomeSecretKey123_SomeSecretKey123";
-        public const int Lifetime = 10; // min
+        public const string Key = "SomeSecretKey123_SomeSecretKey123";
+        public const int Lifetime = 10;
 
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {

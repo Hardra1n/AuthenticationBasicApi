@@ -8,12 +8,12 @@ namespace Application.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : Controller
+    public class UsersController : Controller
     {
-        private ILogger<UserController> _logger;
+        private ILogger<UsersController> _logger;
         private UserService _service;
 
-        public UserController(ILogger<UserController> logger, UserService service)
+        public UsersController(ILogger<UsersController> logger, UserService service)
         {
             _logger = logger;
             _service = service;

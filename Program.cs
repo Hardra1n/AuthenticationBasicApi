@@ -1,5 +1,7 @@
 
+using System.Net;
 using Application;
+using Application.Authentication;
 using Application.Services;
 using Domain;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,8 +15,9 @@ namespace TestingApp
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.ConfigureJwtAuthentication();
+            builder.ConfigureAuthentication();
             builder.Services.AddSingleton<UserSource>();
+            builder.Services.AddSingleton<SystemUserSource>();
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddControllers();
@@ -34,6 +37,7 @@ namespace TestingApp
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseMiddleware<CustomAuthMiddleware>();
             app.UseAuthorization();
 
 
