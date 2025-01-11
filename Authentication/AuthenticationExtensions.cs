@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Authentication
@@ -20,14 +21,15 @@ namespace Application.Authentication
 
                         ValidateAudience = true,
                         ValidAudience = JwtAuthOptions.Audience,
-                        
+
                         ValidateLifetime = true,
 
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = JwtAuthOptions.GetSymmetricSecurityKey()
                     };
                 })
-                .AddBasicAuthentication();
+                .AddBasicAuthentication()
+                .AddNegotiate();
         }
 
         public static AuthenticationBuilder AddBasicAuthentication(this AuthenticationBuilder authBuilder)

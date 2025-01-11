@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package gRPC.Users;
+
+option csharp_namespace = "Application.gRPC";
+
+service UserService
+{
+	rpc GetUsers (GetUsersRequest) returns (GetUsersResponse) {}
+	rpc GetUsersStream (GetUsersRequest) returns (stream GetUsersStreamResponse) {}
+	rpc GetUserById (GetUserByIdRequest) returns (GetUserByIdResponse) {}
+	rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) {}
+	rpc AddUser (AddUserRequest) returns (AddUserResponse) {}
+	rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {}
+}
+
+
+
+message GetUsersRequest { }
+
+message GetUsersResponse
+{
+	repeated IdUser users = 1;
+}
+
+message GetUsersStreamResponse
+{
+	repeated IdUser users = 1;
+}
+
+message GetUserByIdRequest
+{
+	string id = 1;
+}
+
+message GetUserByIdResponse
+{
+	IdUser user = 1;
+}
+
+message UpdateUserRequest
+{
+	IdUser user = 1;
+}
+
+message UpdateUserResponse { }
+
+message AddUserRequest
+{
+	User user = 1;
+}
+
+message AddUserResponse { }
+
+message DeleteUserRequest
+{
+	string id = 1;
+}
+
+message DeleteUserResponse { }
+
+
+message User
+{
+	string first_name = 1;
+	string last_name = 2;
+}
+
+message IdUser
+{
+	string id = 1;
+	string first_name = 2;
+	string last_name = 3;
+}
+

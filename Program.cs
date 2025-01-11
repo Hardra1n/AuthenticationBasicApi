@@ -16,6 +16,7 @@ namespace TestingApp
 
             // Add services to the container.
             builder.ConfigureAuthentication();
+            builder.Services.AddGrpc();
             builder.Services.AddSingleton<UserSource>();
             builder.Services.AddSingleton<SystemUserSource>();
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
@@ -41,6 +42,7 @@ namespace TestingApp
             app.UseAuthorization();
 
 
+            app.MapGrpcService<UserGrpcService>();
             app.MapControllers();
 
             app.ConfigureInitialData();

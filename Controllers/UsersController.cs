@@ -53,5 +53,13 @@ namespace Application.Controllers
             _service.Add(user);
             return Created();
         }
+
+        [HttpGet]
+        [Authorize]
+        [Route("/api/test")]
+        public IActionResult TestRequest()
+        {
+            return Ok("You came");
+        }
     }
 }
