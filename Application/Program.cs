@@ -1,4 +1,5 @@
 
+using System.ComponentModel;
 using System.Net;
 using Application;
 using Application.Authentication;
@@ -18,14 +19,25 @@ namespace TestingApp
 
             // Add services to the container.
             builder.ConfigureAuthentication();
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddSoapCore();
-            builder.Services.AddGrpc();
+            //builder.Services.AddSoapMessageProcessor<SoapExceptionMessageProcessor>();
+            builder.Services.AddGrpc(options =>
+            {
+                options.Interceptors.Add<ExceptionHandlingRpcInterceptor>();
+            });
+
             builder.Services.AddSingleton<UserSource>();
             builder.Services.AddSingleton<SystemUserSource>();
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<IUserSoapService, UserSoapService>();
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.AllowInputFormatterExceptionMessages = false;
+                    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+                });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -40,6 +52,8 @@ namespace TestingApp
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMiddleware<CustomAuthMiddleware>();
@@ -50,6 +64,7 @@ namespace TestingApp
                 options.Path = "/UsersService.asmx";
                 options.SoapSerializer = SoapSerializer.XmlSerializer;
             });
+
             app.MapGrpcService<UserGrpcService>();
             app.MapControllers();
 

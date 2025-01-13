@@ -1,5 +1,7 @@
-﻿using Application.Services;
+﻿using Application.Dtos;
+using Application.Services;
 using Domain;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +10,7 @@ namespace Application.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : Controller
+    public class UsersController : ControllerBase
     {
         private ILogger<UsersController> _logger;
         private UserService _service;
@@ -22,7 +24,7 @@ namespace Application.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(Guid id)
         {
-            var user = _service.GetById(id);
+            var user = _service.GetById(id).ToIdUserDto();
             return Ok(user);
         }
 
@@ -33,9 +35,9 @@ namespace Application.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] User user)
+        public IActionResult Update([FromBody] UserIdDto user)
         {
-            _service.Update(user);
+            _service.Update(user.ToUser());
             return Ok();
         }
 
@@ -48,18 +50,18 @@ namespace Application.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult AddUser([FromBody] User user)
+        public IActionResult AddUser([FromBody] UserIdDto user)
         {
-            _service.Add(user);
+            _service.Add(user.ToUser());
             return Created();
         }
 
         [HttpGet]
         [Authorize]
-        [Route("/api/test")]
+        [Route("/api/ping")]
         public IActionResult TestRequest()
         {
-            return Ok("You came");
+            return Ok(true);
         }
     }
 }

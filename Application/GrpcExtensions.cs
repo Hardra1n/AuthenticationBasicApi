@@ -1,5 +1,6 @@
 ﻿using Application.gRPC;
 using Domain;
+using Domain.Exceptions;
 using Google.Protobuf.WellKnownTypes;
 
 namespace Application
@@ -47,7 +48,7 @@ namespace Application
         {
             if (!DateOnly.TryParse(date, out DateOnly dateOnly))
             {
-                throw new ArgumentException($"Unable to parse {date} as date");
+                throw new DomainException($"Unable to parse {date} as date");
             }
             return dateOnly;
         }

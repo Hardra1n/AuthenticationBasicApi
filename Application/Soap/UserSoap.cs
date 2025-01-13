@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using Domain.Exceptions;
+using System.Runtime.Serialization;
+using System.ServiceModel;
 using System.Xml.Serialization;
 
 namespace Application.Soap
@@ -27,7 +29,7 @@ namespace Application.Soap
             {
                 if (!DateOnly.TryParse(value, out var date))
                 {
-                    throw new ArgumentException($"Unable to parse {value} as date.");
+                    throw new FaultException($"Unable to parse {value} as date.");
                 }
                 BirthdayDate = date;
             }

@@ -1,4 +1,5 @@
 ﻿using Application.gRPC;
+using Domain.Exceptions;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
 
@@ -47,8 +48,7 @@ namespace Application.Services
             }
             catch (FormatException)
             {
-                Status status = new Status(StatusCode.InvalidArgument, "Wrong id format");
-                throw new RpcException(status);
+                throw new DomainException("Wrong ID format");
             }
 
             var response = new GetUserByIdResponse()

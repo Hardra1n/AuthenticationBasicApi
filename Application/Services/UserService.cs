@@ -19,7 +19,6 @@ namespace Application.Services
         public void Delete(Guid id) => _repository.Delete(id);
         public void Update(User entity) => _repository.Update(entity);
         public void Add(User entity) => _repository.Add(entity);
-
         public IEnumerable<User> GetAll() => _repository.GetAll();
     }
 }

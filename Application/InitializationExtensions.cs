@@ -16,22 +16,22 @@ namespace Application
                 new User()
                 {
                     Id = Guid.NewGuid(),
-                    FirstName = "FirstName1",
-                    LastName = "LastName1",
+                    FirstName = "First   Name",
+                    LastName = "Last Name",
                     Birthday = new DateOnly(1996, 1, 1)
                 },
                 new User()
                 {
                     Id = Guid.NewGuid(),
-                    FirstName = "FirstName2",
-                    LastName = "LastName2",
+                    FirstName = "Michael",
+                    LastName = "Clinton",
                     Birthday = new DateOnly(1964, 6, 21)
                 },
                 new User()
                 {
                     Id = Guid.NewGuid(),
-                    FirstName = "FirstName3",
-                    LastName = "LastName3",
+                    FirstName = "Teres",
+                    LastName = "Wolton",
                     Birthday = new DateOnly(2006, 8, 29)
                 },
             ]);

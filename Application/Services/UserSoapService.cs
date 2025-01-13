@@ -1,4 +1,5 @@
 ﻿using Application.Soap;
+using System.Net;
 using System.ServiceModel;
 
 namespace Application.Services
@@ -6,10 +7,12 @@ namespace Application.Services
     public class UserSoapService : IUserSoapService
     {
         private readonly UserService _service;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserSoapService(UserService service) 
+        public UserSoapService(UserService service, IHttpContextAccessor httpContextAccessor) 
         {
             _service = service;
+            this._httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -29,6 +32,10 @@ namespace Application.Services
 
         public void AddUser(UserSoap user)
         {
+            if (!_httpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated == true)
+            {
+                throw new FaultException("Anauthorized access");
+            }
             var domainUser = user.ToDomainUser();
             _service.Add(domainUser);
         }

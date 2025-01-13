@@ -26,7 +26,7 @@ namespace Domain
                 var user = _users.FirstOrDefault(user => user.Id == id);
                 if (user == null)
                 {
-                    ThrowUserNotExist(id);
+                    ThrowsUserNotExist(id);
                 }
 
                 return user;
@@ -37,6 +37,8 @@ namespace Domain
         {
             lock (_locker)
             {
+                ThrowsIfUserWithFirstNameAndLastNameExists(user);
+
                 Guid newUserGuid = Guid.NewGuid();
                 while (_users.Any(user => user.Id == newUserGuid))
                 {
@@ -54,10 +56,7 @@ namespace Domain
             {
                 foreach (var user in users)
                 {
-                    if (_users.All(usr => usr.Id != user.Id))
-                    {
-                        _users.Add(user);
-                    }
+                    Add(user);
                 }
             }
         }
@@ -69,7 +68,7 @@ namespace Domain
                 var index = _users.FindIndex(user => user.Id == id);
                 if (index < 0)
                 {
-                    ThrowUserNotExist(id);
+                    ThrowsUserNotExist(id);
                 }
 
                 _users.RemoveAt(index);
@@ -83,15 +82,25 @@ namespace Domain
                 var collectionUserId = _users.FindIndex(usr => usr.Id == user.Id);
                 if (collectionUserId < 0)
                 {
-                    ThrowUserNotExist(user.Id);
+                    ThrowsUserNotExist(user.Id);
                 }
+                ThrowsIfUserWithFirstNameAndLastNameExists(user);
+
                 _users[collectionUserId] = user;
             }
         }
 
-        private void ThrowUserNotExist(Guid id)
+        private void ThrowsUserNotExist(Guid id)
         {
-            throw new DomainException($"User with {id} not found.");
+            throw new UserNotFoundException(id);
+        }
+
+        private void ThrowsIfUserWithFirstNameAndLastNameExists(User user)
+        {
+            if (_users.Any((u) => u.FirstName == user.FirstName && u.LastName == user.LastName && u.Id != user.Id))
+            {
+                throw new UserAlreadyExistsException($"User with first name '{user.FirstName}' and last name '{user.LastName}' already exists");
+            }
         }
 
         public IEnumerable<User> GetAll()
