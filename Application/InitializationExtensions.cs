@@ -17,19 +17,22 @@ namespace Application
                 {
                     Id = Guid.NewGuid(),
                     FirstName = "FirstName1",
-                    LastName = "LastName1"
+                    LastName = "LastName1",
+                    Birthday = new DateOnly(1996, 1, 1)
                 },
                 new User()
                 {
                     Id = Guid.NewGuid(),
                     FirstName = "FirstName2",
-                    LastName = "LastName2"
+                    LastName = "LastName2",
+                    Birthday = new DateOnly(1964, 6, 21)
                 },
                 new User()
                 {
                     Id = Guid.NewGuid(),
                     FirstName = "FirstName3",
-                    LastName = "LastName3"
+                    LastName = "LastName3",
+                    Birthday = new DateOnly(2006, 8, 29)
                 },
             ]);
         }

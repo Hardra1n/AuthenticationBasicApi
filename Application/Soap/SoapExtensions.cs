@@ -12,6 +12,7 @@ namespace Application.Soap
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                BirthdayDate = user.Birthday
             };
         }
 
@@ -21,7 +22,8 @@ namespace Application.Soap
             {
                 Id = Guid.NewGuid(),
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                Birthday = user.BirthdayDate
             };
         }
 
@@ -31,7 +33,8 @@ namespace Application.Soap
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                Birthday = user.BirthdayDate
             };
         }
     }

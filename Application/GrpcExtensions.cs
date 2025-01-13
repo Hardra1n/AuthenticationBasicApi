@@ -1,5 +1,6 @@
 ﻿using Application.gRPC;
 using Domain;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Application
 {
@@ -8,7 +9,8 @@ namespace Application
         public static gRPC.User ToGrpcUser(this Domain.User user) => new()
         {
             FirstName = user.FirstName,
-            LastName = user.LastName
+            LastName = user.LastName,
+            Birthday = user.Birthday.ToString()
         };
 
         public static string ToGrpcId(this Guid id) => id.ToString();
@@ -22,19 +24,32 @@ namespace Application
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Id = user.Id.ToGrpcId()
+            Id = user.Id.ToGrpcId(),
+            Birthday = user.Birthday.ToString(),
         };
 
         public static Domain.User ToDomainUser(this gRPC.User user) => new()
         {
             FirstName = user.FirstName,
-            LastName = user.LastName
+            LastName = user.LastName,
+            Birthday = user.Birthday.ToDateOnly()
         };
+
         public static Domain.User ToDomainUser(this gRPC.IdUser user) => new()
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Id = user.Id.ToDomainId()
+            Id = user.Id.ToDomainId(),
+            Birthday = user.Birthday.ToDateOnly()
         };
+
+        private static DateOnly ToDateOnly(this string date)
+        {
+            if (!DateOnly.TryParse(date, out DateOnly dateOnly))
+            {
+                throw new ArgumentException($"Unable to parse {date} as date");
+            }
+            return dateOnly;
+        }
     }
 }

@@ -54,7 +54,6 @@ namespace TestingApp
             app.MapControllers();
 
             app.ConfigureInitialData();
-
             app.Run();
         }
     }
