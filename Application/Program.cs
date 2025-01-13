@@ -18,13 +18,13 @@ namespace TestingApp
 
             // Add services to the container.
             builder.ConfigureAuthentication();
-            //builder.Services.AddSoapCore();
+            builder.Services.AddSoapCore();
             builder.Services.AddGrpc();
             builder.Services.AddSingleton<UserSource>();
             builder.Services.AddSingleton<SystemUserSource>();
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<UserService>();
-            //builder.Services.AddScoped<IUserSoapService, UserSoapService>();
+            builder.Services.AddScoped<IUserSoapService, UserSoapService>();
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -45,7 +45,11 @@ namespace TestingApp
             app.UseMiddleware<CustomAuthMiddleware>();
             app.UseAuthorization();
 
-            //app.UseSoapEndpoint<IUserSoapService>("UsersService.asmx", new SoapEncoderOptions());
+            (app as IApplicationBuilder).UseSoapEndpoint<IUserSoapService>(options =>
+            {
+                options.Path = "/UsersService.asmx";
+                options.SoapSerializer = SoapSerializer.XmlSerializer;
+            });
             app.MapGrpcService<UserGrpcService>();
             app.MapControllers();
 
