@@ -3,8 +3,10 @@ using System.Net;
 using Application;
 using Application.Authentication;
 using Application.Services;
+using Application.Soap;
 using Domain;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SoapCore;
 
 namespace TestingApp
 {
@@ -16,11 +18,13 @@ namespace TestingApp
 
             // Add services to the container.
             builder.ConfigureAuthentication();
+            //builder.Services.AddSoapCore();
             builder.Services.AddGrpc();
             builder.Services.AddSingleton<UserSource>();
             builder.Services.AddSingleton<SystemUserSource>();
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<UserService>();
+            //builder.Services.AddScoped<IUserSoapService, UserSoapService>();
             builder.Services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -41,7 +45,7 @@ namespace TestingApp
             app.UseMiddleware<CustomAuthMiddleware>();
             app.UseAuthorization();
 
-
+            //app.UseSoapEndpoint<IUserSoapService>("UsersService.asmx", new SoapEncoderOptions());
             app.MapGrpcService<UserGrpcService>();
             app.MapControllers();
 
