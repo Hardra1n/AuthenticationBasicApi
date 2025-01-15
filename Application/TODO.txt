@@ -1,0 +1,2 @@
+﻿1. Make responses from rest in same format (Checking model validation in controller returns own format).
+2. Handle exceptions begining from controllers?

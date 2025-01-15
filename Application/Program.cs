@@ -7,6 +7,7 @@ using Application.Services;
 using Application.Soap;
 using Domain;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using SoapCore;
 
 namespace TestingApp
@@ -18,15 +19,23 @@ namespace TestingApp
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            //builder.WebHost.ConfigureKestrel(options =>
+            //{
+            //    options.ConfigureEndpointDefaults(endPointDefaults =>
+            //    {
+            //        endPointDefaults.Protocols = HttpProtocols.Http2;
+            //    });
+            //});
+            //builder.Logging.
+
             builder.ConfigureAuthentication();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSoapCore();
-            //builder.Services.AddSoapMessageProcessor<SoapExceptionMessageProcessor>();
             builder.Services.AddGrpc(options =>
             {
                 options.Interceptors.Add<ExceptionHandlingRpcInterceptor>();
+                options.EnableDetailedErrors = true;
             });
-
             builder.Services.AddSingleton<UserSource>();
             builder.Services.AddSingleton<SystemUserSource>();
             builder.Services.AddScoped<IRepository<User>, UserRepository>();

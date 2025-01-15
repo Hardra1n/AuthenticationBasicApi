@@ -57,7 +57,6 @@ namespace Application.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         [Route("/api/ping")]
         public IActionResult TestRequest()
         {
