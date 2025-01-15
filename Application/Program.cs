@@ -1,13 +1,11 @@
-
-using System.ComponentModel;
-using System.Net;
 using Application;
 using Application.Authentication;
 using Application.Services;
 using Application.Soap;
 using Domain;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using NLog;
+using NLog.Web;
 using SoapCore;
 
 namespace TestingApp
@@ -16,17 +14,31 @@ namespace TestingApp
     {
         public static void Main(string[] args)
         {
+            var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+            logger.Debug("init main");
+            try
+            {
+                RunApp(args);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Stopped program because of exception");
+                throw;
+            }
+            finally
+            {
+                NLog.LogManager.Shutdown();
+            }
+
+        }
+
+        public static void RunApp(string[] args)
+        {
+
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            //builder.WebHost.ConfigureKestrel(options =>
-            //{
-            //    options.ConfigureEndpointDefaults(endPointDefaults =>
-            //    {
-            //        endPointDefaults.Protocols = HttpProtocols.Http2;
-            //    });
-            //});
-            //builder.Logging.
+            builder.Logging.ClearProviders();
+            builder.Host.UseNLog();
 
             builder.ConfigureAuthentication();
             builder.Services.AddHttpContextAccessor();
@@ -74,8 +86,11 @@ namespace TestingApp
                 options.SoapSerializer = SoapSerializer.XmlSerializer;
             });
 
-            app.MapGrpcService<UserGrpcService>();
-            app.MapControllers();
+            app.MapGrpcService<UserGrpcService>().RequireHost("8080");
+            app.MapControllers().RequireHost("*:8081");
+
+            app.MapGet("/", () => "Response from HTTP/1.1 on port 8081").RequireHost("*:8081");
+            app.MapGet("/", () => "Response from HTTP/2 on port 8080").RequireHost("*:8080");
 
             app.ConfigureInitialData();
             app.Run();
