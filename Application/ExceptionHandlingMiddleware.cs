@@ -19,11 +19,18 @@ namespace Application
             try
             {
                 await _next(context);
+                HandleErrorResponse(context);
             }
             catch (Exception ex)
             {
                 await HandleExceptionAsync(context, ex);
             }
+        }
+
+        private void HandleErrorResponse(HttpContext context)
+        {
+            context.Response.BodyWriter.
+            throw new NotImplementedException();
         }
 
         private Task HandleExceptionAsync(HttpContext context, Exception ex)
@@ -39,7 +46,9 @@ namespace Application
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             // Customize the response as needed
-            var result = new { message = "Internal Server Error", details = ex.Message };
+            var result = new ErrorHttpMessage(
+                HttpStatusCode.InternalServerError.ToString(),
+                ex.Message);
             return context.Response.WriteAsJsonAsync(result);
         }
 
@@ -55,10 +64,9 @@ namespace Application
                     break;
             }
 
-            var result = new {
-                message = Enum.GetName(typeof(HttpStatusCode), context.Response.StatusCode),
-                details = ex.Message
-            };
+            var result = new ErrorHttpMessage(
+                Enum.GetName(typeof(HttpStatusCode), context.Response.StatusCode),
+                ex.Message);
             return context.Response.WriteAsJsonAsync(result);
         }
     }

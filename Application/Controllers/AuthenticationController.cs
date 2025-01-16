@@ -4,6 +4,7 @@ using Application.Authentication;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Application.Controllers
 {
@@ -23,6 +24,14 @@ namespace Application.Controllers
         public IActionResult GetSecret()
         {
             return Json(JwtAuthOptions.Key);
+        }
+
+        [HttpGet]
+        [Route("auth/ping")]
+        [Authorize]
+        public IActionResult IsAuthenticated()
+        {
+            return Ok();
         }
 
         [HttpPost]

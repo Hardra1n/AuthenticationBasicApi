@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Common.Dtos;
+using Domain;
 
 namespace Application.Dtos
 {

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
-namespace Application.Dtos
+namespace Common.Dtos
 {
     public class UserIdDto : UserDto
     {

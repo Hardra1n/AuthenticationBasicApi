@@ -1,6 +1,7 @@
 ﻿using Domain;
+using Microsoft.Extensions.Logging;
 
-namespace Application.Services
+namespace Domain.Services
 {
     public class UserService
     {

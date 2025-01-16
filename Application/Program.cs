@@ -3,7 +3,7 @@ using Application.Authentication;
 using Application.Services;
 using Application.Soap;
 using Domain;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Domain.Services;
 using NLog;
 using NLog.Web;
 using SoapCore;
@@ -43,11 +43,6 @@ namespace TestingApp
             builder.ConfigureAuthentication();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSoapCore();
-            builder.Services.AddGrpc(options =>
-            {
-                options.Interceptors.Add<ExceptionHandlingRpcInterceptor>();
-                options.EnableDetailedErrors = true;
-            });
             builder.Services.AddSingleton<UserSource>();
             builder.Services.AddSingleton<SystemUserSource>();
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
@@ -75,7 +70,7 @@ namespace TestingApp
 
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMiddleware<CustomAuthMiddleware>();
             app.UseAuthorization();
@@ -86,13 +81,11 @@ namespace TestingApp
                 options.SoapSerializer = SoapSerializer.XmlSerializer;
             });
 
-            app.MapGrpcService<UserGrpcService>().RequireHost("8080");
-            app.MapControllers().RequireHost("*:8081");
+            app.MapControllers();
 
-            app.MapGet("/", () => "Response from HTTP/1.1 on port 8081").RequireHost("*:8081");
-            app.MapGet("/", () => "Response from HTTP/2 on port 8080").RequireHost("*:8080");
 
             app.ConfigureInitialData();
+
             app.Run();
         }
     }
