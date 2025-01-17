@@ -1,7 +1,6 @@
 using Application;
 using GrpcServer.Services;
 using NLog.Web;
-using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Authentication;
 using NLog;
 
@@ -35,7 +34,6 @@ namespace GrpcServer
 
             builder.Logging.ClearProviders();
             builder.Host.UseNLog();
-
 
             builder.Services.AddAuthentication(GrpcCustomAuthenticationDefaults.AuthenticationScheme)
                 .AddScheme<AuthenticationSchemeOptions, GrpcCustomAuthenticationHandler>(
