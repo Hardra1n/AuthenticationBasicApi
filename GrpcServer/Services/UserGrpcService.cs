@@ -8,10 +8,10 @@ namespace GrpcServer.Services
     public class UserGrpcService : UserService.UserServiceBase
     {
         private readonly ILogger<UserGrpcService> _logger;
-        private readonly MainAppHttpClient _httpClient;
+        private readonly MainServerCaller _httpClient;
 
 
-        public UserGrpcService(ILogger<UserGrpcService> logger, MainAppHttpClient httpClient)
+        public UserGrpcService(ILogger<UserGrpcService> logger, MainServerCaller httpClient)
         {
             _logger = logger;
             _httpClient = httpClient;

@@ -19,18 +19,11 @@ namespace Application
             try
             {
                 await _next(context);
-                HandleErrorResponse(context);
             }
             catch (Exception ex)
             {
                 await HandleExceptionAsync(context, ex);
             }
-        }
-
-        private void HandleErrorResponse(HttpContext context)
-        {
-            context.Response.BodyWriter.
-            throw new NotImplementedException();
         }
 
         private Task HandleExceptionAsync(HttpContext context, Exception ex)
