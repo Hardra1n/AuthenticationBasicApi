@@ -48,6 +48,7 @@ namespace GrpcServer
                 options.Interceptors.Add<ExceptionHandlingRpcInterceptor>();
                 options.EnableDetailedErrors = true;
             });
+            builder.Services.AddGrpcReflection();
 
             var app = builder.Build();
 
@@ -56,6 +57,8 @@ namespace GrpcServer
             app.UseAuthorization();
 
             app.MapGrpcService<UserGrpcService>();
+
+            app.MapGrpcReflectionService();
 
             app.Run();
         }
