@@ -86,5 +86,11 @@ namespace Domain
 
             return value;
         }
+
+        public User DeepCopy()
+        {
+            User user = (User)this.MemberwiseClone();
+            return user;
+        }
     }
 }

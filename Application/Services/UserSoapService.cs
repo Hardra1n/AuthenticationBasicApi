@@ -1,5 +1,4 @@
 ﻿using Application.Soap;
-using Domain.Services;
 using System.Net;
 using System.ServiceModel;
 

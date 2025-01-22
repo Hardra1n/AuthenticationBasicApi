@@ -3,9 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Exceptions;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace Domain
 {
@@ -13,11 +16,6 @@ namespace Domain
     {
         private readonly List<User> _users = new List<User>();
         private readonly object _locker = new();
-
-        public UserSource()
-        {
-
-        }
 
         public User FindById(Guid id)
         {
@@ -29,7 +27,7 @@ namespace Domain
                     ThrowsUserNotExist(id);
                 }
 
-                return user;
+                return user.DeepCopy();
             }
         }
 
@@ -46,7 +44,7 @@ namespace Domain
                 }
 
                 user.Id = newUserGuid;
-                _users.Add(user);
+                _users.Add(user.DeepCopy());
             }
         }
 
@@ -56,7 +54,7 @@ namespace Domain
             {
                 foreach (var user in users)
                 {
-                    Add(user);
+                    Add(user.DeepCopy());
                 }
             }
         }
@@ -86,7 +84,7 @@ namespace Domain
                 }
                 ThrowsIfUserWithFirstNameAndLastNameExists(user);
 
-                _users[collectionUserId] = user;
+                _users[collectionUserId] = user.DeepCopy();
             }
         }
 

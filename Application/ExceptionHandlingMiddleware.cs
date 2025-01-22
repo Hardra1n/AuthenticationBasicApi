@@ -1,4 +1,5 @@
 ﻿using Domain.Exceptions;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace Application
@@ -33,6 +34,11 @@ namespace Application
             if (ex is DomainException domainException)
             {
                 return HandleDomainExceptionAsync(context, domainException);
+            }
+
+            if (ex is JsonSerializationException && ex.InnerException is DomainException innerException)
+            {
+                return HandleDomainExceptionAsync(context, innerException);
             }
 
             context.Response.ContentType = "application/json";

@@ -3,7 +3,6 @@ using Application.Authentication;
 using Application.Services;
 using Application.Soap;
 using Domain;
-using Domain.Services;
 using NLog;
 using NLog.Web;
 using SoapCore;
@@ -48,7 +47,10 @@ namespace TestingApp
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<IUserSoapService, UserSoapService>();
-            builder.Services.AddControllers()
+            builder.Services.AddControllers((options) =>
+            {
+                options.InputFormatters.Insert(0, Extensions.GetJsonPatchInputFormatter());
+            })
                 .AddJsonOptions(options =>
                 {
                     options.AllowInputFormatterExceptionMessages = false;
