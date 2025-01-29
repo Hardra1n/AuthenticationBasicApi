@@ -19,12 +19,12 @@ namespace Application.Controllers
             _source = source;
         }
 
-        [HttpGet]
-        [Route("jwt/secret")]
-        public IActionResult GetSecret()
-        {
-            return Json(JwtAuthOptions.Key);
-        }
+        //[HttpGet]
+        //[Route("jwt/secret")]
+        //public IActionResult GetSecret()
+        //{
+        //    return Json(JwtAuthOptions.Key);
+        //}
 
         [HttpGet]
         [Route("auth/ping")]
@@ -53,6 +53,7 @@ namespace Application.Controllers
                 expires: now.Add(TimeSpan.FromMinutes(JwtAuthOptions.Lifetime)),
                 signingCredentials: new(JwtAuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(token);
+
             return Json(encodedJwt);
         }
 
