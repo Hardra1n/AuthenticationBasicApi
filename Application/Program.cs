@@ -46,8 +46,10 @@ namespace TestingApp
             builder.Services.AddGraphQLServer()
                 .AddQueryType<Query>()
                 .AddMutationType<Mutation>()
+                .AddErrorFilter<GraphQLErrorFilter>()
                 .AllowIntrospection(true);
 #pragma warning restore CS0618 // Type or member is obsolete
+
 
             builder.ConfigureAuthentication();
             builder.Services.AddHttpContextAccessor();

@@ -42,7 +42,7 @@ namespace Domain
                 var today = DateOnly.FromDateTime(DateTime.Now);
                 if (value > today || value < minDate)
                 {
-                    throw new InnerLogicExeption($"Birthday must be between '{minDate}' and '{today}, value: {value}'");
+                    throw new InnerLogicException($"Birthday must be between '{minDate}' and '{today}, value: {value}'");
                 }
                 birthday = value;
             }
@@ -77,11 +77,11 @@ namespace Domain
 
             if (!Regex.IsMatch(name, "^.{1,25}$"))
             {
-                throw new InnerLogicExeption("Name length must be less then 25 and not empty");
+                throw new InnerLogicException("Name length must be less then 25 and not empty");
             }
             if (!Regex.IsMatch(name, "^[A-Za-z\\s]*$"))
             {
-                throw new InnerLogicExeption("Name can contain only latin symbols and spaces");
+                throw new InnerLogicException("Name can contain only latin symbols and spaces");
             }
 
             return value;
