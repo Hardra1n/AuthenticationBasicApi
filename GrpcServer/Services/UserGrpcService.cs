@@ -19,7 +19,7 @@ namespace GrpcServer.Services
 
         public override async Task<GetUsersResponse> GetUsers(GetUsersRequest request, ServerCallContext context)
         {
-            var users = await _httpClient.GetUsers(context);
+            var users = await _httpClient.GetUsers(context.GetAuthorizationHeaderValue());
             GetUsersResponse response = new GetUsersResponse();
             response.Users.Add(
                 users.Select(user => user.ToIdUser()));
@@ -27,7 +27,7 @@ namespace GrpcServer.Services
         }
         public override async Task GetUsersStream(GetUsersRequest request, IServerStreamWriter<GetUsersStreamResponse> responseStream, ServerCallContext context)
         {
-            var users = await _httpClient.GetUsers(context);
+            var users = await _httpClient.GetUsers(context.GetAuthorizationHeaderValue());
 
             foreach (var user in users)
             {
@@ -41,7 +41,7 @@ namespace GrpcServer.Services
 
         public override async Task<GetUserByIdResponse> GetUserById(GetUserByIdRequest request, ServerCallContext context)
         {
-            var user = await _httpClient.GetUserById(Guid.Parse(request.Id), context);
+            var user = await _httpClient.GetUserById(Guid.Parse(request.Id), context.GetAuthorizationHeaderValue());
             var response = new GetUserByIdResponse();
             response.User = user.ToIdUser();
             return response;
@@ -50,21 +50,21 @@ namespace GrpcServer.Services
         [Authorize]
         public override async Task<AddUserResponse> AddUser(AddUserRequest request, ServerCallContext context)
         {
-            await _httpClient.CreateUser(request.User.ToMainAppUser(), context);
+            await _httpClient.CreateUser(request.User.ToMainAppUser(), context.GetAuthorizationHeaderValue());
             var response = new AddUserResponse();
             return response;
         }
 
         public override async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest request, ServerCallContext context)
         {
-            await _httpClient.DeleteUser(Guid.Parse(request.Id), context);
+            await _httpClient.DeleteUser(Guid.Parse(request.Id), context.GetAuthorizationHeaderValue());
             var response = new DeleteUserResponse();
             return response;
         }
 
         public override async Task<UpdateUserResponse> UpdateUser(UpdateUserRequest request, ServerCallContext context)
         {
-            await _httpClient.UpdateUser(request.User.ToMainAppUser(), context);
+            await _httpClient.UpdateUser(request.User.ToMainAppUser(), context.GetAuthorizationHeaderValue());
             var response = new UpdateUserResponse();
             return response;
         }

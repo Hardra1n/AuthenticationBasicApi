@@ -107,5 +107,12 @@ namespace GrpcServer
             }
             return statusCode;
         }
+
+        public static string? GetAuthorizationHeaderValue(this ServerCallContext callContext)
+        {
+
+            var authEntry = callContext.RequestHeaders.Get("Authorization");
+            return authEntry?.Value;
+        }
     }
 }

@@ -19,64 +19,62 @@ namespace GrpcServer.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<UserIdDto>> GetUsers(ServerCallContext context)
+        public async Task<IEnumerable<UserIdDto>> GetUsers(string? authorizationHeaderValue)
         {
-            var request = CreateRequest(context, HttpMethod.Get, UsersEndpointURI);
+            var request = CreateRequest(authorizationHeaderValue, HttpMethod.Get, UsersEndpointURI);
             var response = await _httpClient.SendAsync(request);
             var users = await _httpInterpretator.InterpretateResponseMessage<IEnumerable<UserIdDto>>(response);
 
             return users;
         }
 
-        public async Task<UserIdDto> GetUserById(Guid id, ServerCallContext context)
+        public async Task<UserIdDto> GetUserById(Guid id, string? authorizationHeaderValue)
         {
-            var request = CreateRequest(context, HttpMethod.Get, $"{UsersEndpointURI}/{id}");
+            var request = CreateRequest(authorizationHeaderValue, HttpMethod.Get, $"{UsersEndpointURI}/{id}");
             var response = await _httpClient.SendAsync(request);
             var user = await _httpInterpretator.InterpretateResponseMessage<UserIdDto>(response);
             
             return user;
         }
 
-        public async Task CreateUser(UserDto user, ServerCallContext context)
+        public async Task CreateUser(UserDto user, string? authorizationHeaderValue)
         {
-            var request = CreateRequest(context, HttpMethod.Post, UsersEndpointURI);
+            var request = CreateRequest(authorizationHeaderValue, HttpMethod.Post, UsersEndpointURI);
             request.Content = JsonContent.Create(user);
             var response = await _httpClient.SendAsync(request);
             await _httpInterpretator.InterpretateResponseMessage(response);
         }
 
-        public async Task UpdateUser(UserIdDto user, ServerCallContext context)
+        public async Task UpdateUser(UserIdDto user, string? authorizationHeaderValue)
         {
-            var request = CreateRequest(context, HttpMethod.Put, $"{UsersEndpointURI}");
+            var request = CreateRequest(authorizationHeaderValue, HttpMethod.Put, $"{UsersEndpointURI}");
             request.Content = JsonContent.Create(user);
             var response = await _httpClient.SendAsync(request);
             await _httpInterpretator.InterpretateResponseMessage(response);
         }
 
-        public async Task DeleteUser(Guid id, ServerCallContext context)
+        public async Task DeleteUser(Guid id, string? authorizationHeaderValue)
         {
-            var request = CreateRequest(context, HttpMethod.Delete, $"{UsersEndpointURI}/{id}");
+            var request = CreateRequest(authorizationHeaderValue, HttpMethod.Delete, $"{UsersEndpointURI}/{id}");
             var response = await _httpClient.SendAsync(request);
             await _httpInterpretator.InterpretateResponseMessage(response);
         }
 
         public async Task<bool> CheckAuthentication(string authorizationHeaderValue)
         {
-            HttpRequestMessage authPingMessage = new(HttpMethod.Get, "api/auth/ping");
-            authPingMessage.Headers.Add("Authorization", authorizationHeaderValue);
+            var authPingMessage = CreateRequest(authorizationHeaderValue, HttpMethod.Get, "api/auth/ping");
 
             var response = await _httpClient.SendAsync(authPingMessage);
 
             return response.IsSuccessStatusCode;
         }
 
-        private HttpRequestMessage CreateRequest(ServerCallContext context, HttpMethod httpMethod, string uri) 
+        private HttpRequestMessage CreateRequest(string? authorizationHeaderValue, HttpMethod httpMethod, string uri)
         {
             var requestMessage = new HttpRequestMessage();
-            var authEntry = context.RequestHeaders.Get("Authorization");
-            if (authEntry != null)
+            if (authorizationHeaderValue != null)
             {
-                requestMessage.Headers.Add("Authorization", authEntry.Value);
+                requestMessage.Headers.Add("Authorization", authorizationHeaderValue);
             }
 
             requestMessage.Method = httpMethod;

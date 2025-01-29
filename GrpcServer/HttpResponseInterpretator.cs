@@ -31,6 +31,29 @@ namespace GrpcServer
             throw new NotImplementedException("Unrecongized flow of execution");
         }
 
+        //public async Task InterpretateResponseMessage(HttpResponseMessage response)
+        //{
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        return;
+        //    }
+
+        //    var content = await response.Content.ReadAsStringAsync();
+        //    var data = JsonSerializer.Deserialize<ErrorHttpMessage>(content, Extensions.GetDefaultSerializerOptions());
+        //    var grpcStatusCode = response.StatusCode.ToGrpcStatusCode();
+        //    if (data == null)
+        //    {
+
+        //        Status unrecongizedStatus = content.Length > MaxBytesCountForMessage
+        //            ? new Status(grpcStatusCode, $"Response from main server was bigger then {MaxBytesCountForMessage} bytes")
+        //            : new Status(grpcStatusCode, content);
+        //        throw new RpcException(unrecongizedStatus);
+        //    }
+        //    Status status = new(grpcStatusCode, data.details);
+        //    throw new RpcException(status);
+        //}
+
+
         public async Task InterpretateResponseMessage(HttpResponseMessage response)
         {
             if (response.IsSuccessStatusCode)
@@ -40,17 +63,12 @@ namespace GrpcServer
 
             var content = await response.Content.ReadAsStringAsync();
             var data = JsonSerializer.Deserialize<ErrorHttpMessage>(content, Extensions.GetDefaultSerializerOptions());
-            var grpcStatusCode = response.StatusCode.ToGrpcStatusCode();
-            if (data == null)
+            throw new MainServerException()
             {
-
-                Status unrecongizedStatus = content.Length > MaxBytesCountForMessage
-                    ? new Status(grpcStatusCode, $"Response from main server was bigger then {MaxBytesCountForMessage} bytes")
-                    : new Status(grpcStatusCode, content);
-                throw new RpcException(unrecongizedStatus);
-            }
-            Status status = new(response.StatusCode.ToGrpcStatusCode(), data.details);
-            throw new RpcException(status);
+                Content = content,
+                StatusCode = response.StatusCode,
+                ErrorHttpMessage = data
+            };
         }
     }
 }

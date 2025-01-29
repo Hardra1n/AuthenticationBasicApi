@@ -3,6 +3,7 @@ using GrpcServer.Services;
 using NLog.Web;
 using Microsoft.AspNetCore.Authentication;
 using NLog;
+using GrpcServer.GraphQL;
 
 namespace GrpcServer
 {
@@ -35,6 +36,9 @@ namespace GrpcServer
             builder.Logging.ClearProviders();
             builder.Host.UseNLog();
 
+            //builder.Services.AddHttpContextAccessor();
+            //builder.Services.AddGraphQLServer()
+            //    .AddQueryType<Query>();
             builder.Services.AddAuthentication(GrpcCustomAuthenticationDefaults.AuthenticationScheme)
                 .AddScheme<AuthenticationSchemeOptions, GrpcCustomAuthenticationHandler>(
                     GrpcCustomAuthenticationDefaults.AuthenticationScheme, options => { });
@@ -59,6 +63,8 @@ namespace GrpcServer
             app.MapGrpcService<UserGrpcService>();
 
             app.MapGrpcReflectionService();
+
+            //app.MapGraphQL("/api/graphql");
 
             app.Run();
         }
