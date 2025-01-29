@@ -1,5 +1,6 @@
 using Application;
 using Application.Authentication;
+using Application.GraphQL;
 using Application.Services;
 using Application.Soap;
 using Domain;
@@ -31,6 +32,7 @@ namespace TestingApp
 
         }
 
+
         public static void RunApp(string[] args)
         {
 
@@ -38,6 +40,14 @@ namespace TestingApp
 
             builder.Logging.ClearProviders();
             builder.Host.UseNLog();
+
+            // Can't interospect on IIS without allowing introspection
+#pragma warning disable CS0618 // Type or member is obsolete
+            builder.Services.AddGraphQLServer()
+                .AddQueryType<Query>()
+                .AddMutationType<Mutation>()
+                .AllowIntrospection(true);
+#pragma warning restore CS0618 // Type or member is obsolete
 
             builder.ConfigureAuthentication();
             builder.Services.AddHttpContextAccessor();
@@ -84,7 +94,7 @@ namespace TestingApp
             });
 
             app.MapControllers();
-
+            app.MapGraphQL("/api/graphql");
 
             app.ConfigureInitialData();
 
