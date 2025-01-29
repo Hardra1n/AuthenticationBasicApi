@@ -3,7 +3,6 @@ using GrpcServer.Services;
 using NLog.Web;
 using Microsoft.AspNetCore.Authentication;
 using NLog;
-using GrpcServer.GraphQL;
 
 namespace GrpcServer
 {

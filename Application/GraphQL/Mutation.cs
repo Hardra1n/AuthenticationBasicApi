@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using HotChocolate.Authorization;
 
 namespace Application.GraphQL
 {
@@ -23,6 +24,7 @@ namespace Application.GraphQL
             return true;
         }
 
+        [Authorize]
         public bool AddUser(UserGraphQL user) 
         {
             _service.Add(user.ToDomainUser());

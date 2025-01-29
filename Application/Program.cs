@@ -44,6 +44,7 @@ namespace TestingApp
             // Can't interospect on IIS without allowing introspection
 #pragma warning disable CS0618 // Type or member is obsolete
             builder.Services.AddGraphQLServer()
+                .AddAuthorization()
                 .AddQueryType<Query>()
                 .AddMutationType<Mutation>()
                 .AddErrorFilter<GraphQLErrorFilter>()
