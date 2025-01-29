@@ -47,7 +47,9 @@ namespace TestingApp
                 .AddAuthorization()
                 .AddQueryType<Query>()
                 .AddMutationType<Mutation>()
+                .AddSubscriptionType<Subscription>()
                 .AddErrorFilter<GraphQLErrorFilter>()
+                .AddInMemorySubscriptions()
                 .AllowIntrospection(true);
 #pragma warning restore CS0618 // Type or member is obsolete
 
@@ -82,7 +84,7 @@ namespace TestingApp
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseWebSockets();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             //app.UseHttpsRedirection();
