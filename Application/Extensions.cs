@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
+using TestingApp;
 
 namespace Application
 {
@@ -12,15 +13,20 @@ namespace Application
             var builder = new ServiceCollection()
                 .AddLogging()
                 .AddMvc()
-                .AddNewtonsoftJson()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.Converters.Add(new DateOnlyNewtonsoftJsonConverter());
+                })
                 .Services.BuildServiceProvider();
 
-            return builder
+            var patchInputFormatter = builder
                 .GetRequiredService<IOptions<MvcOptions>>()
                 .Value
                 .InputFormatters
                 .OfType<NewtonsoftJsonPatchInputFormatter>()
                 .First();
+
+            return patchInputFormatter;
         }
     }
 }

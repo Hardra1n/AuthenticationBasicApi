@@ -1,4 +1,4 @@
 ﻿namespace Application
 {
-    public record ErrorHttpMessage(string message, string details);
+    public record ErrorHttpMessage(string Message, string Details);
 }

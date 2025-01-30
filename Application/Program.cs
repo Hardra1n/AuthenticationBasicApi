@@ -4,6 +4,8 @@ using Application.GraphQL;
 using Application.Services;
 using Application.Soap;
 using Domain;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using NLog;
 using NLog.Web;
 using SoapCore;
@@ -62,19 +64,17 @@ namespace TestingApp
             builder.Services.AddScoped<IRepository<User>, UserRepository>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<IUserSoapService, UserSoapService>();
-            builder.Services.AddControllers((options) =>
-            {
-                options.InputFormatters.Insert(0, Extensions.GetJsonPatchInputFormatter());
-            })
-                .AddJsonOptions(options =>
+
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
                 {
-                    options.AllowInputFormatterExceptionMessages = false;
-                    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+                    options.SerializerSettings.Converters.Add(new DateOnlyNewtonsoftJsonConverter());
                 });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
 
             var app = builder.Build();
 

@@ -2,6 +2,7 @@
 using Application.Services;
 using Common.Dtos;
 using Domain;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
@@ -51,10 +52,14 @@ namespace Application.Controllers
             }
 
             var user = _service.GetById(id);
-            patchDoc.ApplyTo(user);
+            patchDoc.ApplyTo(user, ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if (user.Id != id)
             {
-                return BadRequest("Changing Id of existing user is prohibited");
+                throw new DomainException("Changing Id of existing user is prohibited");
             }
             _service.Update(user);
 
